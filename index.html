@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Captura de Datos</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #999; padding: 6px 12px; }
+    th { background: #eee; }
+    #seccionTabla { display: none; }
+  </style>
+</head>
+<body>
+
+  <h2>Captura de Datos</h2>
+
+  <form id="formulario">
+    <input type="hidden" id="id">
+
+    <label for="nombre">Nombre:</label><br>
+    <input type="text" id="nombre" required><br><br>
+
+   
+    <label for="pais">¿Te gustaría viajar a otro país?</label><br>
+   <input type="text" id="pais" required><br><br>
+
+    
+   <label for="temporada">¿Cuál es tu temporada del año favorita?</label><br>
+     <select id="temporada" required>
+      <option value="" disabled selected>Selecciona una estación...</option>
+       <option value="Invierno">Invierno</option>
+      <option value="Primavera">Primavera</option>
+       <option value="Verano">Verano</option>
+       <option value="Otoño">Otoño</option>
+     </select><br><br>
+   
+    
+  <label for="playa">¿Prefieres la playa antes que la montaña?</label><br>
+  <input type="text" id="playa" required><br><br>
+    
+
+  <label for="avion">¿Te gustaría viajar en avión?</label><br>
+  <input type="text" id="avion" required><br><br> 
+    
+    
+  <label for="compania">¿Prefieres viajar con tus amigos en lugar de con tu familia?</label><br>
+  <input type="text" id="compania" required><br><br>
+    
+    
+  <label for="comida">¿Te gustaría probar comida típica de otros países?</label><br>
+  <input type="text" id="comida" required><br><br>
+    
+    
+  <label for="clima">¿Prefieres los destinos fríos antes que los calurosos?</label><br>
+  <input type="text" id="clima" required><br><br>
+    
+    
+  <label for="parque">¿Te gustaría visitar un parque de diversiones en otro país?</label><br>
+  <input type="text" id="parque" required><br><br>
+    
+    
+  <label for="duracion">¿Preferirías pasar dos semanas de vacaciones en lugar de una semana?</label><br>
+  <input type="text" id="duracion" required><br><br>
+    
+    
+  <label for="cultura">¿Te gustaría conocer otras culturas durante tus viajes?</label><br>
+   <input type="text" id="cultura" required><br><br>
+    
+    <button type="button" id="btnRegistrar">Registrar</button>
+    <button type="button" id="btnConsultar">Consultar</button>
+    <button type="button" id="btnModificar">Modificar</button>
+    <button type="button" id="btnEliminar">Eliminar</button>
+  </form>
+
+  <p id="estado"></p>
+
+  <div id="seccionTabla">
+    <h2>Registros</h2>
+    <button type="button" id="btnCerrar">Cerrar tabla</button>
+    <br><br>
+    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Nombre</th>
+          <th>País</th>
+          <th>Temporada</th>
+          <th>Playa</th> 
+          <th>Avión</th>
+          <th>Compañía</th>
+          <th>Comida</th>
+          <th>Clima</th>
+          <th>Parque</th>
+          <th>Duración</th>
+          <th>Cultura</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
+
+  <script>
+    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwu7eGJPtDcFCMTsHvxFXtJ2Y7NWBSWWKMKZALeG2WixxckOyAgUF862VjZ6QnJ7tn_KQ/exec";
+    var registros = [];
+    var tablaVisible = false;
+
+    function enviar(datos) {
+      return fetch(URL_SCRIPT, {
+        method: "POST",
+        body: new URLSearchParams(datos)
+      }).then(function (r) { return r.json(); });
+    }
+
+  function actualizarBotones() {
+      var hayRegistro = document.getElementById("id").value !== "";
+      document.getElementById("btnRegistrar").disabled = hayRegistro;
+      document.getElementById("btnModificar").disabled = !hayRegistro;
+      document.getElementById("btnEliminar").disabled = !hayRegistro;
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("formulario").reset();
+      document.getElementById("id").value = "";
+      actualizarBotones();
+    }
+
+   document.getElementById("btnRegistrar").onclick = function () {
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Guardando...";
+      enviar({
+        accion: "guardar",
+        nombre: document.getElementById("nombre").value,
+        pais: document.getElementById("pais").value,
+        temporada: document.getElementById("temporada").value,
+        playa: document.getElementById("playa").value, 
+        avion: document.getElementById("avion").value,
+        compania: document.getElementById("compania").value,
+        comida: document.getElementById("comida").value,
+        clima: document.getElementById("clima").value,
+        parque: document.getElementById("parque").value,
+        duracion: document.getElementById("duracion").value,
+        cultura: document.getElementById("cultura").value,
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro guardado!");
+      });
+    };
+
+    document.getElementById("btnConsultar").onclick = function () {
+      document.getElementById("estado").textContent = "Consultando...";
+      tablaVisible = true;
+      document.getElementById("seccionTabla").style.display = "block";
+      cargarRegistros(function () {
+        document.getElementById("estado").textContent = "";
+      });
+    };
+
+    function cargarRegistros(alTerminar) {
+      fetch(URL_SCRIPT)
+        .then(function (r) { return r.json(); })
+        .then(function (datos) {
+          registros = datos;
+          mostrarTabla();
+          if (alTerminar) alTerminar();
+        });
+    }
+
+    function mostrarTabla() {
+      var filtro = document.getElementById("buscador").value.trim().toLowerCase();
+      var tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
+
+      registros.forEach(function (reg) {
+       if (!reg.nombre.toString().toLowerCase().startsWith(filtro)) return;
+
+        var tr = document.createElement("tr");
+        agregarCelda(tr, new Date(reg.fecha).toLocaleString());
+
+        agregarCelda(tr, reg.nombre);
+        agregarCelda(tr, reg.pais);
+        agregarCelda(tr, reg.temporada);
+        agregarCelda(tr, reg.playa);
+        agregarCelda(tr, reg.avion);
+        agregarCelda(tr, reg.compania);
+        agregarCelda(tr, reg.comida);
+        agregarCelda(tr, reg.clima);
+        agregarCelda(tr, reg.parque);
+        agregarCelda(tr, reg.duracion);
+        agregarCelda(tr, reg.cultura);
+
+        var td = document.createElement("td");
+
+        var btnModificarFila = document.createElement("button");
+        btnModificarFila.textContent = "Modificar registro";
+        btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
+
+        var btnEliminarFila = document.createElement("button");
+        btnEliminarFila.textContent = "Eliminar";
+        btnEliminarFila.onclick = function () { eliminar(reg.id); };
+
+        td.appendChild(btnModificarFila);
+        td.appendChild(btnEliminarFila);
+        tr.appendChild(td);
+        tabla.appendChild(tr);
+      });
+    }
+
+    function agregarCelda(fila, texto) {
+      var td = document.createElement("td");
+      td.textContent = texto;
+      fila.appendChild(td);
+    }
+
+    document.getElementById("buscador").oninput = mostrarTabla;
+
+     document.getElementById("btnCerrar").onclick = function () {
+      tablaVisible = false;
+      document.getElementById("seccionTabla").style.display = "none";
+      document.getElementById("buscador").value = "";
+      document.getElementById("tabla").innerHTML = "";
+    };
+
+    function cargarEnFormulario(reg) {
+      document.getElementById("id").value = reg.id;
+
+      document.getElementById("nombre").value = reg.nombre;
+      document.getElementById("pais").value = reg.pais;
+      document.getElementById("temporada").value = reg.temporada;
+      document.getElementById("playa").value = reg.playa;
+      document.getElementById("avion").value = reg.avion;
+      document.getElementById("compania").value = reg.compania;
+      document.getElementById("comida").value = reg.comida;
+      document.getElementById("clima").value = reg.clima;
+      document.getElementById("parque").value = reg.parque;
+      document.getElementById("duracion").value = reg.duracion;
+      document.getElementById("cultura").value = reg.cultura;
+
+      document.getElementById("estado").textContent =
+        "Modificando registro: cambia los datos y presiona Modificar";
+      actualizarBotones();
+
+      window.scrollTo(0, 0);                     // sube al formulario
+      document.getElementById("nombre").focus(); // cursor en el nombre
+    }
+
+    document.getElementById("btnModificar").onclick = function () {
+      var id = document.getElementById("id").value;
+
+      if (id === "") {
+        alert("Primero elige un registro con el botón 'Modificar registro'");
+        return;
+      }
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Modificando...";
+      enviar({
+        accion: "editar",
+        id: id,
+        nombre: document.getElementById("nombre").value,
+        pais: document.getElementById("pais").value,
+        temporada: document.getElementById("temporada").value,
+        playa: document.getElementById("playa").value,
+        avion: document.getElementById("avion").value,
+        compania: document.getElementById("compania").value,
+        comida: document.getElementById("comida").value,
+        clima: document.getElementById("clima").value,
+        parque: document.getElementById("parque").value,
+        duracion: document.getElementById("duracion").value,
+        cultura: document.getElementById("cultura").value
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro modificado!");
+      });
+    };
+
+     document.getElementById("btnEliminar").onclick = function () {
+      eliminar(document.getElementById("id").value);
+    };
+
+    function eliminar(id) {
+      if (!confirm("¿Seguro que quieres eliminar este registro?")) return;
+
+      document.getElementById("estado").textContent = "Eliminando...";
+      enviar({ accion: "eliminar", id: id }).then(function (respuesta) {
+        terminarAccion(respuesta, "Registro eliminado");
+      });
+    }
+
+    function terminarAccion(respuesta, mensajeOk) {
+      document.getElementById("estado").textContent =
+        respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
+      limpiarFormulario();
+      if (tablaVisible) cargarRegistros();  // refresca la tabla si está abierta
+    }
+
+    actualizarBotones();
+  </script>
+
+</body>
+</html>
