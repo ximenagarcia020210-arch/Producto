@@ -2,81 +2,216 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Captura de Datos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura de Datos - Vacaciones</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #999; padding: 6px 12px; }
-    th { background: #eee; }
-    #seccionTabla { display: none; }
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent: #38bdf8;
+      --bg-color: #f0f9ff;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --border-color: #cbd5e1;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0369a1;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    }
+
+    form#formulario {
+      background: var(--card-bg);
+      max-width: 650px;
+      margin: 0 auto 30px auto;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15);
+      border-top: 5px solid var(--primary);
+    }
+
+    label {
+      font-weight: 600;
+      color: #334155;
+      display: inline-block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+    }
+
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Estilos de botones */
+    form#formulario button, #seccionTabla button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      margin-right: 8px;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    form#formulario button:hover, #seccionTabla button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    form#formulario button:active, #seccionTabla button:active {
+      transform: translateY(0);
+    }
+
+    /* Botones específicos de tabla */
+    #tabla button {
+      padding: 6px 10px;
+      margin: 2px;
+      font-size: 0.85rem;
+    }
+
+    #estado {
+      text-align: center;
+      font-weight: bold;
+      color: #0284c7;
+      margin: 15px 0;
+      font-size: 1.1rem;
+    }
+
+    #seccionTabla {
+      background: var(--card-bg);
+      max-width: 95%;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15);
+      overflow-x: auto;
+    }
+
+    #buscador {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Captura de Datos</h2>
+  <h2>✈️ Captura de Datos - Experiencia de Viaje 🌴</h2>
 
   <form id="formulario">
     <input type="hidden" id="id">
 
     <label for="nombre">Nombre:</label><br>
-    <input type="text" id="nombre" required><br><br>
+    <input type="text" id="nombre" required><br>
 
-   
     <label for="pais">¿Te gustaría viajar a otro país?</label><br>
-   <input type="text" id="pais" required><br><br>
+    <input type="text" id="pais" required><br>
 
-    
-   <label for="temporada">¿Cuál es tu temporada del año favorita?</label><br>
-     <select id="temporada" required>
+    <label for="temporada">¿Cuál es tu temporada del año favorita?</label><br>
+    <select id="temporada" required>
       <option value="" disabled selected>Selecciona una estación...</option>
-       <option value="Invierno">Invierno</option>
+      <option value="Invierno">Invierno</option>
       <option value="Primavera">Primavera</option>
-       <option value="Verano">Verano</option>
-       <option value="Otoño">Otoño</option>
-     </select><br><br>
-   
-    
-  <label for="playa">¿Prefieres la playa antes que la montaña?</label><br>
-  <input type="text" id="playa" required><br><br>
-    
+      <option value="Verano">Verano</option>
+      <option value="Otoño">Otoño</option>
+    </select><br>
 
-  <label for="avion">¿Te gustaría viajar en avión?</label><br>
-  <input type="text" id="avion" required><br><br> 
+    <label for="playa">¿Prefieres la playa antes que la montaña?</label><br>
+    <input type="text" id="playa" required><br>
+
+    <label for="avion">¿Te gustaría viajar en avión?</label><br>
+    <input type="text" id="avion" required><br> 
     
+    <label for="compania">¿Prefieres viajar con tus amigos en lugar de con tu familia?</label><br>
+    <input type="text" id="compania" required><br>
     
-  <label for="compania">¿Prefieres viajar con tus amigos en lugar de con tu familia?</label><br>
-  <input type="text" id="compania" required><br><br>
+    <label for="comida">¿Te gustaría probar comida típica de otros países?</label><br>
+    <input type="text" id="comida" required><br>
     
+    <label for="clima">¿Prefieres los destinos fríos antes que los calurosos?</label><br>
+    <input type="text" id="clima" required><br>
     
-  <label for="comida">¿Te gustaría probar comida típica de otros países?</label><br>
-  <input type="text" id="comida" required><br><br>
+    <label for="parque">¿Te gustaría visitar un parque de diversiones en otro país?</label><br>
+    <input type="text" id="parque" required><br>
     
+    <label for="duracion">¿Preferirías pasar dos semanas de vacaciones en lugar de una semana?</label><br>
+    <input type="text" id="duracion" required><br>
     
-  <label for="clima">¿Prefieres los destinos fríos antes que los calurosos?</label><br>
-  <input type="text" id="clima" required><br><br>
+    <label for="cultura">¿Te gustaría conocer otras culturas durante tus viajes?</label><br>
+    <input type="text" id="cultura" required><br>
     
-    
-  <label for="parque">¿Te gustaría visitar un parque de diversiones en otro país?</label><br>
-  <input type="text" id="parque" required><br><br>
-    
-    
-  <label for="duracion">¿Preferirías pasar dos semanas de vacaciones en lugar de una semana?</label><br>
-  <input type="text" id="duracion" required><br><br>
-    
-    
-  <label for="cultura">¿Te gustaría conocer otras culturas durante tus viajes?</label><br>
-   <input type="text" id="cultura" required><br><br>
-    
-    <button type="button" id="btnRegistrar">Registrar</button>
-    <button type="button" id="btnConsultar">Consultar</button>
-    <button type="button" id="btnModificar">Modificar</button>
-    <button type="button" id="btnEliminar">Eliminar</button>
+    <div style="text-align: center; margin-top: 20px;">
+      <button type="button" id="btnRegistrar">Registrar</button>
+      <button type="button" id="btnConsultar">Consultar</button>
+      <button type="button" id="btnModificar">Modificar</button>
+      <button type="button" id="btnEliminar">Eliminar</button>
+    </div>
   </form>
 
   <p id="estado"></p>
 
   <div id="seccionTabla">
-    <h2>Registros</h2>
+    <h2>Registros de Viajeros</h2>
     <button type="button" id="btnCerrar">Cerrar tabla</button>
     <br><br>
     <input type="text" id="buscador" placeholder="Buscar por nombre...">
@@ -104,7 +239,7 @@
   </div>
 
   <script>
-    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwu7eGJPtDcFCMTsHvxFXtJ2Y7NWBSWWKMKZALeG2WixxckOyAgUF862VjZ6QnJ7tn_KQ/exec";
+    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzslbQbCEOr-nt1gFIs6wporEVEpV1crp3Hhg4dMf-vpGQ8NE-Wr4HEcvTLXLNFqbIlyQ/exec";
     var registros = [];
     var tablaVisible = false;
 
@@ -115,7 +250,7 @@
       }).then(function (r) { return r.json(); });
     }
 
-  function actualizarBotones() {
+    function actualizarBotones() {
       var hayRegistro = document.getElementById("id").value !== "";
       document.getElementById("btnRegistrar").disabled = hayRegistro;
       document.getElementById("btnModificar").disabled = !hayRegistro;
@@ -128,7 +263,7 @@
       actualizarBotones();
     }
 
-   document.getElementById("btnRegistrar").onclick = function () {
+    document.getElementById("btnRegistrar").onclick = function () {
       if (!document.getElementById("formulario").reportValidity()) return;
 
       document.getElementById("estado").textContent = "Guardando...";
@@ -175,7 +310,7 @@
       tabla.innerHTML = "";
 
       registros.forEach(function (reg) {
-       if (!reg.nombre.toString().toLowerCase().startsWith(filtro)) return;
+        if (!reg.nombre.toString().toLowerCase().startsWith(filtro)) return;
 
         var tr = document.createElement("tr");
         agregarCelda(tr, new Date(reg.fecha).toLocaleString());
@@ -195,7 +330,7 @@
         var td = document.createElement("td");
 
         var btnModificarFila = document.createElement("button");
-        btnModificarFila.textContent = "Modificar registro";
+        btnModificarFila.textContent = "Modificar";
         btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
 
         var btnEliminarFila = document.createElement("button");
@@ -217,7 +352,7 @@
 
     document.getElementById("buscador").oninput = mostrarTabla;
 
-     document.getElementById("btnCerrar").onclick = function () {
+    document.getElementById("btnCerrar").onclick = function () {
       tablaVisible = false;
       document.getElementById("seccionTabla").style.display = "none";
       document.getElementById("buscador").value = "";
@@ -243,15 +378,15 @@
         "Modificando registro: cambia los datos y presiona Modificar";
       actualizarBotones();
 
-      window.scrollTo(0, 0);                     // sube al formulario
-      document.getElementById("nombre").focus(); // cursor en el nombre
+      window.scrollTo(0, 0);
+      document.getElementById("nombre").focus();
     }
 
     document.getElementById("btnModificar").onclick = function () {
       var id = document.getElementById("id").value;
 
       if (id === "") {
-        alert("Primero elige un registro con el botón 'Modificar registro'");
+        alert("Primero elige un registro con el botón 'Modificar'");
         return;
       }
       if (!document.getElementById("formulario").reportValidity()) return;
@@ -276,7 +411,7 @@
       });
     };
 
-     document.getElementById("btnEliminar").onclick = function () {
+    document.getElementById("btnEliminar").onclick = function () {
       eliminar(document.getElementById("id").value);
     };
 
@@ -293,7 +428,7 @@
       document.getElementById("estado").textContent =
         respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
       limpiarFormulario();
-      if (tablaVisible) cargarRegistros();  // refresca la tabla si está abierta
+      if (tablaVisible) cargarRegistros();
     }
 
     actualizarBotones();
